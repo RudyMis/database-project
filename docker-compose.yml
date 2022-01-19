@@ -1,0 +1,46 @@
+version: "3.1"
+
+services:
+  database:
+    image: mariadb
+    restart: "on-failure"
+    environment:
+      MYSQL_ROOT_PASSWORD: PanTadeusz1
+      MYSQL_DATABASE: database
+      MYSQL_USER: rust
+      MYSQL_PASSWORD: rust-password
+    volumes:
+      - ./database/data:/data:rw
+      - ./database/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    hostname: database
+    networks:
+      - comms
+
+  backend:
+    image: bdp-backend
+    restart: "on-failure"
+    environment:
+      DATABASE_HOSTNAME: database
+    depends_on:
+      - database
+    networks:
+      - comms
+    hostname: backend
+    ports:
+      - 9090:8000
+  
+  frontend:
+    image: bdp-frontend
+    restart: "on-failure"
+    depends_on:
+      - backend
+    networks:
+      - comms
+    ports:
+      - 3000:3000
+
+networks:
+  comms:
+    name: comms
+
+
