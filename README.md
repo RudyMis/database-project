@@ -23,14 +23,14 @@ To run `docker` without `sudo` you need to add user to docker group: [link](http
 
 ## Build
 
-Either run script `setup.sh` (it requires `docker buildx`) or execute:
+Either run script `setup.sh` (it requires `docker buildx`) or run:
 ```
 docker build -t bdp-backend backend
 docker build -t bdp-frontend frontend
 
 docker-compose up -d
 ```
-Afterwards three containers should be running (database takes up to 15 minutes to boot up)
+Afterwards three containers should be running (database takes up to 4 minutes to boot up)
 
 ## Using
 
