@@ -155,7 +155,6 @@ create or replace table demand (
 commit;
 
 -- Trigger checks whether demand exceeds production
--- (It is placed after cuting tables because it was very slow otherwise)
 delimiter //
 create or replace trigger max_production_check
 before update on demand
@@ -190,38 +189,39 @@ end; //
 delimiter ;
 
 -- Copy of above, but on insert (mariadb doesn't accept (insert or update))
-delimiter //
-create or replace trigger max_production_check
-before insert on demand
-for each row
-begin
-    set @sum_diff = 0;
-    -- Przez rozdzielenie selecta chyba ten pierwszy jet cache'owany
-    with joined as (
-        select
-            dmd.demand_id, dmd.month, dmd.item_id, dmd.country, pro.`value` - dmd.`value` as val
-        from demand dmd left join production pro on
-            dmd.item_id = pro.item_id and
-            dmd.month = pro.month and
-            dmd.country = pro.country
-    )
-    select sum(val)
-    into @sum_diff
-    from joined
-    where
-        joined.demand_id = new.demand_id and
-        joined.item_id = new.item_id and
-        joined.country = new.country and
-        month(joined.month) <= month(new.month) and
-        year(joined.month) = year(new.month);
+-- Commented out because it slows startup
+/* delimiter // */
+/* create or replace trigger max_production_check */
+/* before insert on demand */
+/* for each row */
+/* begin */
+/*     set @sum_diff = 0; */
+/*     -- Przez rozdzielenie selecta chyba ten pierwszy jet cache'owany */
+/*     with joined as ( */
+/*         select */
+/*             dmd.demand_id, dmd.month, dmd.item_id, dmd.country, pro.`value` - dmd.`value` as val */
+/*         from demand dmd left join production pro on */
+/*             dmd.item_id = pro.item_id and */
+/*             dmd.month = pro.month and */
+/*             dmd.country = pro.country */
+/*     ) */
+/*     select sum(val) */
+/*     into @sum_diff */
+/*     from joined */
+/*     where */
+/*         joined.demand_id = new.demand_id and */
+/*         joined.item_id = new.item_id and */
+/*         joined.country = new.country and */
+/*         month(joined.month) <= month(new.month) and */
+/*         year(joined.month) = year(new.month); */
 
-    if @sum_diff - new.`value` < 0 then
-        set new.fulfillable=false;
-    else
-        set new.fulfillable=true;
-    end if;
-end; //
-delimiter ;
+/*     if @sum_diff - new.`value` < 0 then */
+/*         set new.fulfillable=false; */
+/*     else */
+/*         set new.fulfillable=true; */
+/*     end if; */
+/* end; // */
+/* delimiter ; */
 
 commit;
 
