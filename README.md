@@ -23,7 +23,7 @@ To run `docker` without `sudo` you need to add user to docker group: [link](http
 
 ## Build
 
-Either run script `setup.sh` (it requires `docker buildx`) or run:
+Either run script `setup.sh` (it requires `docker buildx`) or run in project's root directory:
 ```
 docker build -t bdp-backend backend
 docker build -t bdp-frontend frontend
