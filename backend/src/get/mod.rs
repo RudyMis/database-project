@@ -34,16 +34,6 @@ pub fn get_distinct_values(
     ))?;
 
     let res: Vec<data_types::Column> = columns.iter().fold(Vec::new(), |mut vec, column| {
-        println!(
-            "
-            select {} 
-            from demand
-            natural join product_groups 
-            natural join country_groups
-            {}
-            group by {};",
-            &column, &where_stmt, &column
-        );
         vec.push(data_types::Column {
             name: column.clone(),
             values: conn
