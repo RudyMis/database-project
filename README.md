@@ -1,4 +1,4 @@
-# Project
+# Data visualization project
 
 ## Description
 
@@ -30,7 +30,7 @@ docker build -t bdp-frontend frontend
 
 docker-compose up -d
 ```
-Afterwards three containers should be running (database takes up to 4 minutes to boot up)
+Afterwards three containers should be running (database takes up to 4 minutes to boot)
 
 ## Using
 
